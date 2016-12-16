@@ -19,6 +19,9 @@ $ sudo rabbitmqctl purge_queue queue_name
 # To list all the queue and see process
 $ sudo rabbitmqctl list_queues name messages_ready messages_unacknowledged
 
+# List the bindings
+$ sudo rabbitmqctl list_bindings
+
 # Activate rabbitmq plugins
 $ sudo rabbitmq-plugins enable rabbitmq_management
 
@@ -29,6 +32,7 @@ password :
 
 # interface admin ref
 https://www.rabbitmq.com/management.html
+
 
 ###############################################################
 ################### Setting up RabbitMQ #######################
