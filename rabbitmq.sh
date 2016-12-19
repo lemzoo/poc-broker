@@ -52,3 +52,5 @@ current node details:
 - cookie hash: t95PIM9vnvqAuUzA4/pYgg==
 
 Useful link : http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html#broker-instructions
+
+https://www.rabbitmq.com/tutorials/tutorial-five-python.html
