@@ -27,8 +27,14 @@ $ sudo rabbitmq-plugins enable rabbitmq_management
 
 # Acces to the interface
 http://localhost:15672/
-username :
-password :
+username 1 : guest
+password 1 : guest
+
+username 2 : admin
+password 2 : root
+
+username 3 : manager
+password 3 : root
 
 # interface admin ref
 https://www.rabbitmq.com/management.html
