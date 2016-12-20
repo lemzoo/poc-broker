@@ -11,7 +11,7 @@ channel.exchange_declare(exchange=exchange_name,
                          type=exchange_type)
 channel.basic_qos(prefetch_count=1)
 
-result = channel.queue_declare(durable=True)
+result = channel.queue_declare(exclusive=True, durable=True)
 queue_name = result.method.queue
 
 binding_keys = sys.argv[1:]

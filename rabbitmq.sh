@@ -16,6 +16,11 @@ $ sudo rabbitmqctl stop
 # To delete all the message on the queue
 $ sudo rabbitmqctl purge_queue queue_name
 
+# To delete all the queue
+$ sudo rabbitmqctl stop_app
+$ sudo rabbitmqctl reset    # Be sure you really want to do this!
+$ sudo rabbitmqctl start_app
+
 # To list all the queue and see process
 $ sudo rabbitmqctl list_queues name messages_ready messages_unacknowledged
 
@@ -60,3 +65,6 @@ current node details:
 Useful link : http://docs.celeryproject.org/en/latest/getting-started/brokers/index.html#broker-instructions
 
 https://www.rabbitmq.com/tutorials/tutorial-five-python.html
+
+# Backup de Rabbit-mq
+link : http://stackoverflow.com/questions/19635165/rabbitmq-how-to-create-and-restore-backup
