@@ -6,9 +6,6 @@ from custum import display_digit
 
 def callback(ch, method, properties, body):
     print(" [x] Received Data : %r" % body)
-    process_time = body.count(b'.')
+    process_time = body.count('.')
     print('Time to process this task is %r seconds' % process_time)
-    display_digit(process_time)
-
-    print(" [x] Done")
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    return display_digit(process_time)

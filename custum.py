@@ -7,3 +7,6 @@ def display_digit(number):
         display = '.'
         print(display, sep='', end='', flush=True)
         time.sleep(1)
+
+    print(" [x] Done !")
+    return number

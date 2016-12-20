@@ -9,6 +9,6 @@ def worker(ch, method, properties, body):
 
     process_time = body.count(b'.')
     print('Time to process this task is %r seconds' % process_time)
-    display_digit(process_time)
-    print(" [x] Done")
+    ret = display_digit(process_time)
     ch.basic_ack(delivery_tag=method.delivery_tag)
+    return ret
