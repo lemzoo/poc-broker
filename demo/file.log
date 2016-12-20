@@ -1,0 +1,16 @@
+ [*] Waiting for messages. To exit press CTRL+C
+ [x] Received Data : 'A.critical':b'A critical kernel error ....................'
+Time to process this task is 20 seconds
+.................... [x] Done
+ [x] Received Data : 'A.critical':b'A critical kernel error ....................'
+Time to process this task is 20 seconds
+.................... [x] Done
+ [x] Received Data : 'DNA.critical':b'A critical kernel error ....................'
+Time to process this task is 20 seconds
+.................... [x] Done
+ [x] Received Data : 'DNA.critical':b'A critical kernel error ....................'
+Time to process this task is 20 seconds
+.................... [x] Done
+ [x] Received Data : 'DNA.critical':b'A critical kernel error ....................'
+Time to process this task is 20 seconds
+....................
