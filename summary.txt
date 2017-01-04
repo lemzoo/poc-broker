@@ -2,3 +2,8 @@
 A producer is a user application that sends messages.
 A queue is a buffer that stores messages.
 A consumer is a user application that receives messages.
+
+Point soulevé lors de la démo : 03-01-2016
+La valeur ajouté de Celery sur le projet
+Le nombre de fil de message restant dynamiquement dans la mémoire lorsqu'il y'a une erreur
+
