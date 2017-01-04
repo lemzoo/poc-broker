@@ -1,5 +1,9 @@
 # http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html
-
+#
+#APPLICATION       EXCHANGE        TASK LIST        WORKER
+#   [DATA] -------> [DATA] ---> [D]+[D][D][D] --->  [DATA]
+# Publisher        EXCHANGE          Queue         Consumer
+#
 #Install RabbitMQ server
 $ sudo apt-get install rabbitmq-server
 
