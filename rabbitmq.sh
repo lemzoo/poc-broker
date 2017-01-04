@@ -1,5 +1,8 @@
 # http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html
 
+#Install RabbitMQ server
+$ sudo apt-get install rabbitmq-server
+
 # Starting/Stopping the RabbitMQ server
 
 # To start the server:
