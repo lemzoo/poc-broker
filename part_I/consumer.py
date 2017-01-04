@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-from setup import channel
+from setup import channel, queue_name
+
 from receive import callback
 
 channel.basic_consume(callback,
-                      queue='hello',
+                      queue=queue_name,
                       no_ack=True)
 
 
