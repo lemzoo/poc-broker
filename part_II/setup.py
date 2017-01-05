@@ -4,5 +4,6 @@ import pika
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='task_queue', durable=True)
+queue_name = 'task_queue'
+channel.queue_declare(queue=queue_name, durable=True)
 channel.basic_qos(prefetch_count=1)
