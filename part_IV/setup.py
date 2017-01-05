@@ -8,7 +8,6 @@ channel = connection.channel()
 exchange_name = 'direct_logs'
 exchange_type = 'direct'
 channel.exchange_declare(exchange=exchange_name, type=exchange_type)
-channel.basic_qos(prefetch_count=1)
 
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
