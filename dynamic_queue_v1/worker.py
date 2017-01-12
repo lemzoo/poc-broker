@@ -6,6 +6,9 @@ from processor import callback
 class Worker():
     def __init__(self, host='localhost', port=5672, user_id='guest',
                  password='guest'):
+        self.init_app(host, port, user_id, password)
+
+    def init_app(self, host, port, user_id, password):
         self.parameters = pika.ConnectionParameters(
             host, port, credentials=pika.PlainCredentials(user_id, password))
         self.connection = pika.BlockingConnection(self.parameters)
