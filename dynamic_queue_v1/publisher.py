@@ -1,11 +1,14 @@
 # !/usr/bin/env python
-from producer import Producer
+from broker.producer import Producer
 import time
 
-publisher = Producer()
 
-# Send a message
-for i in range(100):
-    message = 'Hello World : %s' % i
-    publisher.publish(message)
-    time.sleep(1)
+if __name__ == '__main__':
+    publisher = Producer()
+
+    # Send a message
+    for i in range(10):
+        queue = 'my_custum_queue_%s' % i
+        message = 'Hello World : %s' % i
+        publisher.publish(queue, message)
+        time.sleep(0.1)
