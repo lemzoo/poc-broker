@@ -5,37 +5,58 @@
 # Publisher        EXCHANGE          Queue         Consumer
 #
 #Install RabbitMQ server
+```
 $ sudo apt-get install rabbitmq-server
+```
 
 # Starting/Stopping the RabbitMQ server
 
 # To start the server:
+```
 $ sudo rabbitmq-server
-
+```
 # You can also run it in the background by adding the
 # -detached option (note: only one dash):
+```
 $ sudo rabbitmq-server -detached
+```
 
 # Never use kill (kill(1)) to stop the RabbitMQ server,
 # but rather use the rabbitmqctl command:
+```
 $ sudo rabbitmqctl stop
+```
 
 # To delete all the message on the queue
+```
 $ sudo rabbitmqctl purge_queue queue_name
+```
 
 # To delete all the queue
+```
 $ sudo rabbitmqctl stop_app
+```
+```
 $ sudo rabbitmqctl reset    # Be sure you really want to do this!
+```
+```
 $ sudo rabbitmqctl start_app
+```
 
 # To list all the queue and see process
+```
 $ sudo rabbitmqctl list_queues name messages_ready messages_unacknowledged
-
+```
 # List the bindings
-$ sudo rabbitmqctl list_bindings
 
+```
+$ sudo rabbitmqctl list_bindings
+```
 # Activate rabbitmq plugins
+
+```
 $ sudo rabbitmq-plugins enable rabbitmq_management
+```
 
 # Acces to the interface
 http://localhost:15672/
@@ -58,11 +79,19 @@ https://www.rabbitmq.com/management.html
 # To use Celery we need to create a RabbitMQ user,
 # a virtual host and allow that user access to that virtual host:
 
+```
 $ sudo rabbitmqctl add_user myuser mypassword
-$ sudo rabbitmqctl add_vhost myvhost
-$ sudo rabbitmqctl set_user_tags myuser mytag
-$ sudo rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"
+```
 
+```
+$ sudo rabbitmqctl add_vhost myvhost
+```
+```
+$ sudo rabbitmqctl set_user_tags myuser mytag
+```
+```
+$ sudo rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"
+```
 # Details about RabbitMQ
 current node details:
 - node name: 'rabbitmq-cli-86@lamine'

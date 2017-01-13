@@ -52,7 +52,6 @@ On pourrait lister plus précisément des cas d'utilisation qu'on avoir pour pou
 
 Pour pouvoir modifier un message en erreur par exemple, voir plus haut.
 
-
 ## Fonctionnalités existantes
 
 - Générer des messages
@@ -68,5 +67,4 @@ Le backend définit des abonnements à ces évennements (`event_handler.py`), et
 ## Références
 
 Les tutos RabbitMQ :
-
 - <https://www.rabbitmq.com/getstarted.html>
