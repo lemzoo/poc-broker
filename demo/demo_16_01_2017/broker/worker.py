@@ -42,7 +42,7 @@ class Worker():
         self.setup_queue(queue_name)
         self.channel.basic_consume(callback,
                                    queue=queue_name)
-        print('...  [*] Waiting for messages. To exit press CTRL+C')
+        # print('...  [*] Waiting for messages. To exit press CTRL+C')
 
         try:
             self.channel.start_consuming()
