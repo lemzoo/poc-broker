@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 import pika
 from broker.rabbit_api import get_all_queue
+import json
 
 
 class Producer():
@@ -29,7 +30,7 @@ class Producer():
         self.channel.queue_declare(queue=queue_name, durable=True,
                                    auto_delete=True)
 
-    def publish(self, queue='hello', message='Hello World !'):
+    def publish(self, queue='hello', message={'Hello World !'}):
         # Get all existing queues and check if the queue args exists
         queues = get_all_queue(self.host, 15672,
                                self.user_id, self.password)
@@ -38,5 +39,5 @@ class Producer():
 
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,
-                                   body=message)
+                                   body=json.dumps(message))
         print(" [x] Sent %s ", message)
