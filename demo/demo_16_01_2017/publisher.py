@@ -64,4 +64,4 @@ if __name__ == '__main__':
     for message in data:
         queue = 'dossier_{0}_{1}' .format(message['nom'], message['prenom'])
         publisher.publish(queue, message)
-        time.sleep(1)
+        time.sleep(0.5)
