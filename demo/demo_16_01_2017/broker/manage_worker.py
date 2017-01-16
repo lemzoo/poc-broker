@@ -30,7 +30,8 @@ class ManageWorker(Thread):
             # Get all existing queues and check if the queue args exists
             queues = get_all_queue(self.host, self.port,
                                    self.user_id, self.password)
-            print('Nombre de dossier à traiter : %s' % len(queues))
+            number_queues = len(queues)
+            print('Nombre de dossier à traiter : %s' % number_queues)
             for queue in queues:
                 # Init a new worker to job on the queue
                 worker = Worker()
@@ -38,3 +39,8 @@ class ManageWorker(Thread):
                 with lock:
                     worker.start_consuming(queue)
                 time.sleep(process_time)
+            if number_queues == 0:
+                process_time = 5
+            else:
+                process_time = 2
+            time.sleep(process_time)
