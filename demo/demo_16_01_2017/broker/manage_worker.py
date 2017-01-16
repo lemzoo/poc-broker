@@ -24,13 +24,13 @@ class ManageWorker(Thread):
         self.password = password
 
     def run(self):
-        print('... Start the consumer ...')
+        print('... Démarage du broker de message ...')
         process_time = 2  # 2 secondes
         while True:
             # Get all existing queues and check if the queue args exists
             queues = get_all_queue(self.host, self.port,
                                    self.user_id, self.password)
-            print('Number of queue : %s' % len(queues))
+            print('Nombre de dossier à traiter : %s' % len(queues))
             for queue in queues:
                 # Init a new worker to job on the queue
                 worker = Worker()
