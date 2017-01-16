@@ -42,9 +42,8 @@ class Worker():
         # Setup the channel before starting consuming
         self.setup_queue(queue_name)
         self.channel.basic_consume(callback,
-                                   queue=queue_name,
-                                   no_ack=True)
-        #print('...  [*] Waiting for messages. To exit press CTRL+C')
+                                   queue=queue_name)
+        print('...  [*] Waiting for messages. To exit press CTRL+C')
 
         try:
             self.channel.start_consuming()
