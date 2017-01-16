@@ -39,5 +39,6 @@ class Producer():
 
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,
-                                   body=json.dumps(message))
+                                   body=json.dumps(message),
+                                   properties=pika.BasicProperties(delivery_mode=2, ))
         print("=> Evenement sur dossier :", message["nom"], message["prenom"])
