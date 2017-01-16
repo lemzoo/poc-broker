@@ -40,4 +40,4 @@ class Producer():
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,
                                    body=json.dumps(message))
-        print(" [x] Sent %s ", message)
+        print("=> Evenement sur dossier :", message["nom"], message["prenom"])
