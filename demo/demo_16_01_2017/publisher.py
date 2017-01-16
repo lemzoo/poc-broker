@@ -31,13 +31,18 @@ data = [{
         },
         {
         "id": "50000",
-        "nom": "Polony",
-        "prenom": "Christiant"
+        "nom": "Vian",
+        "prenom": "Boris"
         },
         {
         "id": "60000",
-        "nom": "Sartre",
-        "prenom": "Jean-Paul"
+        "nom": "Javert",
+        "prenom": "Jean"
+        },
+                {
+        "id": "70000",
+        "nom": "Martin",
+        "prenom": "Paul"
         },
         {
         "id": "90000",
@@ -49,7 +54,6 @@ if __name__ == '__main__':
     publisher = Producer()
 
     for message in data:
-        print(message)
         queue = 'dossier_{0}_{1}' .format(message['nom'], message['prenom'])
         publisher.publish(queue, message)
         time.sleep(0.1)
