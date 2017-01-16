@@ -36,8 +36,13 @@ data = [{
         },
         {
         "id": "60000",
-        "nom": "Sartre",
-        "prenom": "Jean-Paul"
+        "nom": "Javert",
+        "prenom": "Jean"
+        },
+                {
+        "id": "70000",
+        "nom": "Martin",
+        "prenom": "Paul"
         },
         {
         "id": "90000",
