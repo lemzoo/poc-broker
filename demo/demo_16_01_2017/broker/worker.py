@@ -37,7 +37,7 @@ class Worker():
         self.channel.stop_consuming()
 
     def start_consuming(self, queue_name):
-        print('... Starting to consume message on a queue `%s` . ..' %
+        print('... Starting to consume message on a queue `%s` ...' %
               queue_name)
 
         # Setup the channel before starting consuming
