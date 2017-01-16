@@ -1,4 +1,4 @@
-{
+[
     {
 	"id" : "42",
 	"nom":"Dupont",
@@ -41,4 +41,4 @@
 	"nom":"Camus",
 	"prenom":"Albert",
     }
-}
+]
