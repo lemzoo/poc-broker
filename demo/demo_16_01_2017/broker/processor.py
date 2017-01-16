@@ -9,4 +9,5 @@ def callback(channel, method, properties, body):
     print(" [x] Traitement du dossier de ... {0} {1} ..."
           .format(msg_context['nom'], msg_context['prenom']))
     time.sleep(1)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
     channel.stop_consuming()

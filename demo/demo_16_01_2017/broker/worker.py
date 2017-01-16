@@ -19,25 +19,24 @@ class Worker():
         self.open_connection()
 
     def open_connection(self):
-        #print('... Opening the connection to rabbitmq ...')
+        # print('... Opening the connection to rabbitmq ...')
         self.channel = self.connection.channel()
 
     def close_connection(self):
-        #print("... The connection will be closed in a few second ...")
+        # print("... The connection will be closed in a few second ...")
         self.connection.close()
-        #print("... The connection is closed ...")
+        # print("... The connection is closed ...")
 
     def setup_queue(self, queue_name):
-        #print('... Setting the queue `%s` ...' % queue_name)
+        # print('... Setting the queue `%s` ...' % queue_name)
         self.channel.queue_declare(queue=queue_name, durable=True,
                                    auto_delete=True)
 
     def stop_consuming(self):
-        #print('... The worker stopped to consume message ...')
+        # print('... The worker stopped to consume message ...')
         self.channel.stop_consuming()
 
     def start_consuming(self, queue_name):
-        #print('... Starting to consume message on a queue `%s` ...' % queue_name)
 
         # Setup the channel before starting consuming
         self.setup_queue(queue_name)
