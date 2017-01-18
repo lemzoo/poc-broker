@@ -9,7 +9,7 @@ LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
 LOGGER = logging.getLogger(__name__)
 
 
-class ExamplePublisher(object):
+class Producer(object):
     """This is an example publisher that will handle unexpected interactions
     with RabbitMQ such as channel and connection closures.
 
@@ -338,15 +338,3 @@ class ExamplePublisher(object):
         if self._connection is not None:
             LOGGER.info('Closing connection')
             self._connection.close()
-
-
-def main():
-    logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-
-    # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
-    example = ExamplePublisher('amqp://guest:guest@localhost:5672/%2F?connection_attempts=3&heartbeat_interval=3600')
-    example.run()
-
-
-if __name__ == '__main__':
-    main()
