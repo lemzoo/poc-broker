@@ -2,6 +2,7 @@
 
 import logging
 import pika
+from broker.rabbit_api import list_queues
 
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
@@ -21,10 +22,10 @@ class Worker(object):
     commands that were issued and that should surface in the output as well.
 
     """
-    EXCHANGE = 'message'
-    EXCHANGE_TYPE = 'topic'
+    EXCHANGE = 'SIAEF'
+    EXCHANGE_TYPE = 'direct'
     QUEUE = 'text'
-    ROUTING_KEY = 'example.text'
+    ROUTING_KEY = ''
 
     def __init__(self, amqp_url):
         """Create a new instance of the consumer class, passing in the AMQP
@@ -184,8 +185,16 @@ class Worker(object):
         :param str|unicode queue_name: The name of the queue to declare.
 
         """
-        LOGGER.info('Declaring queue %s', queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name)
+        LOGGER.info('Declaring queue # %s #', queue_name)
+        # Check if the queue exist or not
+        queues = list_queues()
+        if queue_name not in queues:
+            LOGGER.info('This queue # %s # doesn''t exist on server', queue_name)
+        else:
+            LOGGER.info('This queue # %s # also exists on server', queue_name)
+
+        self._channel.queue_declare(callback=self.on_queue_declareok,
+                                    queue=queue_name)
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
@@ -199,8 +208,10 @@ class Worker(object):
         """
         LOGGER.info('Binding %s to %s with %s',
                     self.EXCHANGE, self.QUEUE, self.ROUTING_KEY)
-        self._channel.queue_bind(self.on_bindok, self.QUEUE,
-                                 self.EXCHANGE, self.ROUTING_KEY)
+        self._channel.queue_bind(self.on_bindok,
+                                 queue=self.QUEUE,
+                                 exchange=self.EXCHANGE,
+                                 routing_key='')
 
     def on_bindok(self, unused_frame):
         """Invoked by pika when the Queue.Bind method has completed. At this

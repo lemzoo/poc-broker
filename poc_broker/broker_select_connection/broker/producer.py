@@ -3,6 +3,8 @@
 import logging
 import pika
 import json
+import time
+from broker.rabbit_api import list_queues
 
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
@@ -22,13 +24,14 @@ class Producer(object):
     messages that have been sent and if they've been confirmed by RabbitMQ.
 
     """
-    EXCHANGE = 'message'
-    EXCHANGE_TYPE = 'topic'
+    EXCHANGE = 'SIAEF'
+    EXCHANGE_TYPE = 'direct'
     PUBLISH_INTERVAL = 5
-    QUEUE = 'text'
+    # QUEUE = 'text'
     ROUTING_KEY = 'example.text'
+    AMQP_URL = 'amqp://guest:guest@localhost:5672/%2F?connection_attempts=3&heartbeat_interval=3600'
 
-    def __init__(self, amqp_url):
+    def __init__(self, queue_name, message):
         """Setup the example publisher object, passing in the URL we will use
         to connect to RabbitMQ.
 
@@ -44,7 +47,9 @@ class Producer(object):
         self._message_number = None
 
         self._stopping = False
-        self._url = amqp_url
+        self._queue = queue_name
+        self._message = message
+        self._url = self.AMQP_URL
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -59,6 +64,7 @@ class Producer(object):
         LOGGER.info('Connecting to %s', self._url)
         return pika.SelectConnection(pika.URLParameters(self._url),
                                      on_open_callback=self.on_connection_open,
+                                     on_open_error_callback=None,
                                      on_close_callback=self.on_connection_closed,
                                      stop_ioloop_on_close=False)
 
@@ -102,6 +108,7 @@ class Producer(object):
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_channel_open(self, channel):
+        # import pdb; pdb.set_trace()
         """This method is invoked by pika when the channel has been opened.
         The channel object is passed in so we can make use of it.
 
@@ -113,7 +120,8 @@ class Producer(object):
         LOGGER.info('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
-        self.setup_exchange(self.EXCHANGE)
+        # self.setup_exchange(self.EXCHANGE)
+        self.setup_queue(self._queue)
 
     def add_on_channel_close_callback(self):
         """This method tells pika to call the on_channel_closed method if
@@ -149,9 +157,10 @@ class Producer(object):
 
         """
         LOGGER.info('Declaring exchange %s', exchange_name)
-        self._channel.exchange_declare(self.on_exchange_declareok,
-                                       exchange_name,
-                                       self.EXCHANGE_TYPE)
+        # self._channel.basic_qos(prefetch_count=1)
+        self._channel.exchange_declare(callback=self.on_exchange_declareok,
+                                       exchange=exchange_name,
+                                       type=self.EXCHANGE_TYPE)
 
     def on_exchange_declareok(self, unused_frame):
         """Invoked by pika when RabbitMQ has finished the Exchange.Declare RPC
@@ -161,9 +170,10 @@ class Producer(object):
 
         """
         LOGGER.info('Exchange declared')
-        self.setup_queue(self.QUEUE)
+        self.setup_queue(self._queue)
 
     def setup_queue(self, queue_name):
+        # import pdb; pdb.set_trace()
         """Setup the queue on RabbitMQ by invoking the Queue.Declare RPC
         command. When it is complete, the on_queue_declareok method will
         be invoked by pika.
@@ -171,8 +181,12 @@ class Producer(object):
         :param str|unicode queue_name: The name of the queue to declare.
 
         """
-        LOGGER.info('Declaring queue %s', queue_name)
-        self._channel.queue_declare(self.on_queue_declareok, queue_name)
+        LOGGER.info('Declaring queue # %s #', queue_name)
+        self._channel.queue_declare(queue=queue_name,
+                                    durable=True,
+                                    callback=self.on_bindok)
+                                    # callback=self.on_queue_declareok)
+        # Check Me : durable=True, auto_delete=True don't work
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
@@ -185,11 +199,14 @@ class Producer(object):
 
         """
         LOGGER.info('Binding %s to %s with %s',
-                    self.EXCHANGE, self.QUEUE, self.ROUTING_KEY)
-        self._channel.queue_bind(self.on_bindok, self.QUEUE,
-                                 self.EXCHANGE, self.ROUTING_KEY)
+                    self.EXCHANGE, self._queue, self.ROUTING_KEY)
+        self._channel.queue_bind(callback=self.on_bindok,
+                                 queue=self._queue,
+                                 exchange=self.EXCHANGE,
+                                 routing_key='')
 
     def on_bindok(self, unused_frame):
+        # import pdb; pdb.set_trace()
         """This method is invoked by pika when it receives the Queue.BindOk
         response from RabbitMQ. Since we know we're now setup and bound, it's
         time to start publishing."""
@@ -197,13 +214,23 @@ class Producer(object):
         self.start_publishing()
 
     def start_publishing(self):
+        # import pdb; pdb.set_trace()
         """This method will enable delivery confirmations and schedule the
         first message to be sent to RabbitMQ
 
         """
         LOGGER.info('Issuing consumer related RPC commands')
-        self.enable_delivery_confirmations()
-        self.schedule_next_message()
+        # self.enable_delivery_confirmations()
+        LOGGER.info('Sending next message for %0.1f seconds',
+                    self.PUBLISH_INTERVAL)
+        self._connection.add_timeout(self.PUBLISH_INTERVAL,
+                                     self.publish_message(self._message))
+        LOGGER.info('Messsage # %s # was sent correctly ', self._message)
+
+        self.stop()
+        if (self._connection is not None and not self._connection.is_closed):
+            # Finish closing
+            self._connection.ioloop.start()
 
     def enable_delivery_confirmations(self):
         """Send the Confirm.Select RPC method to RabbitMQ to enable delivery
@@ -256,7 +283,8 @@ class Producer(object):
         self._connection.add_timeout(self.PUBLISH_INTERVAL,
                                      self.publish_message)
 
-    def publish_message(self):
+    def publish_message(self, message):
+        # import pdb; pdb.set_trace()
         """If the class is not stopping, publish a message to RabbitMQ,
         appending a list of deliveries with the message number that was sent.
         This list will be used to check for delivery confirmations in the
@@ -272,20 +300,21 @@ class Producer(object):
         if self._channel is None or not self._channel.is_open:
             return
 
-        message = {u'مفتاح': u' قيمة',
-                   u'键': u'值',
-                   u'キー': u'値'}
-        properties = pika.BasicProperties(app_id='example-publisher',
+        properties = pika.BasicProperties(app_id='SIAF-MI',
                                           content_type='application/json',
-                                          headers=message)
+                                          delivery_mode=2)
 
-        self._channel.basic_publish(self.EXCHANGE, self.ROUTING_KEY,
-                                    json.dumps(message, ensure_ascii=False),
-                                    properties)
+        # self._channel.basic_publish(exchange=self.EXCHANGE,
+        queue_name = message['id']
+        self._channel.basic_publish(exchange='',
+                                    routing_key=queue_name,
+                                    body=json.dumps(message, ensure_ascii=False),
+                                    properties=properties)
         self._message_number += 1
         self._deliveries.append(self._message_number)
         LOGGER.info('Published message # %i', self._message_number)
-        self.schedule_next_message()
+        # self.schedule_next_message()
+        # import pdb; pdb.set_trace()
 
     def run(self):
         """Run the example code by connecting and then starting the IOLoop.
