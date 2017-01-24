@@ -120,8 +120,8 @@ class Producer(object):
         LOGGER.info('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
-        # self.setup_exchange(self.EXCHANGE)
-        self.setup_queue(self._queue)
+        self.setup_exchange(self.EXCHANGE)
+        #self.setup_queue(self._queue)
 
     def add_on_channel_close_callback(self):
         """This method tells pika to call the on_channel_closed method if
