@@ -191,7 +191,8 @@ class Worker(object):
         # Check if the queue exist or not
         queues = list_queues()
         if queue_name not in queues:
-            LOGGER.info('This queue # %s # doesn''t exist on server', queue_name)
+            LOGGER.info(
+                'This queue # %s # doesn''t exist on server', queue_name)
         else:
             LOGGER.info('This queue # %s # also exists on server', queue_name)
 
@@ -240,8 +241,11 @@ class Worker(object):
         """
         LOGGER.info('Issuing consumer related RPC commands')
         self.add_on_cancel_callback()
-        self._consumer_tag = self._channel.basic_consume(self.on_message,
-                                                         self.QUEUE)
+        # self._consumer_tag = self._channel.basic_consume(self.on_message,
+        #                                                self.QUEUE)
+
+        self._consumer_tag = self._channel.basic_get(
+            self.on_message, self.QUEUE)
 
     def add_on_cancel_callback(self):
         """Add a callback that will be invoked if RabbitMQ cancels the consumer
@@ -281,6 +285,7 @@ class Worker(object):
         LOGGER.info('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
         self.acknowledge_message(basic_deliver.delivery_tag)
+        self.stop_consuming()
 
     def acknowledge_message(self, delivery_tag):
         """Acknowledge the message delivery from RabbitMQ by sending a
