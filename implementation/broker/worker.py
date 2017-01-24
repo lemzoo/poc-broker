@@ -163,9 +163,11 @@ class Worker(object):
 
         """
         LOGGER.info('Declaring exchange %s', exchange_name)
-        self._channel.exchange_declare(self.on_exchange_declareok,
-                                       exchange_name,
-                                       self.EXCHANGE_TYPE)
+        self._channel.exchange_declare(callback=self.on_exchange_declareok,
+                                       exchange=exchange_name,
+                                       type=self.EXCHANGE_TYPE,
+                                       passive=True,
+                                       durable=True)
 
     def on_exchange_declareok(self, unused_frame):
         """Invoked by pika when RabbitMQ has finished the Exchange.Declare RPC
@@ -194,7 +196,9 @@ class Worker(object):
             LOGGER.info('This queue # %s # also exists on server', queue_name)
 
         self._channel.queue_declare(callback=self.on_queue_declareok,
-                                    queue=queue_name)
+                                    queue=queue_name,
+                                    passive=True,
+                                    auto_delete=True)
 
     def on_queue_declareok(self, method_frame):
         """Method invoked by pika when the Queue.Declare RPC call made in
