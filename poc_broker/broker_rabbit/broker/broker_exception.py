@@ -3,7 +3,7 @@ class ExchangeNotDefinedYet(Exception):
     pass
 
 
-class ExchangeAlreadyInUse(Exception):
+class ExchangeAlreadyExist(Exception):
     pass
 
 

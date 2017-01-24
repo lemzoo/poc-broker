@@ -6,8 +6,8 @@ from broker.rabbit_api import get_all_queue
 from broker.broker_exception import QueueNameDoesntMatch
 from broker.broker_exception import ExchangeNameDoesntMatch
 from broker.broker_exception import ChannelDoesntExist
-from broker.broker_exception import ConnectionNotOpenedYet
 from broker.channel_handler import ChannelHandler
+from broker.exchange_handler import ExchangeHandler
 
 
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
@@ -30,6 +30,7 @@ class Producer(object):
         self._password = password
         self._connection = connection
         self._channel = None
+        self._exchange_name = None
         self.init_app()
 
     def init_app(self):
@@ -44,7 +45,13 @@ class Producer(object):
         """
         LOGGER.info('Launching the init app for the producer')
         self.setup_properties()
-        self.setup_exchange()
+        channel_handler = ChannelHandler(self._connection)
+        channel_handler.open_channel()
+        self._channel = channel_handler.get_channel()
+        exchange_handler = ExchangeHandler(self._channel, 'SIEF')
+        exchange_handler.setup_exchange()
+        self._exchange_name = exchange_handler.get_exchange_name()
+        channel_handler.close_channel()
 
     def setup_properties(self, app_id='ANEF-SIEF',
                          content_type='application/json',
@@ -62,30 +69,6 @@ class Producer(object):
                                                 content_type=content_type,
                                                 delivery_mode=delivery_mode)
 
-    def setup_exchange(self, exchange_name=DEFAULT_EXCHANGE, type='direct'):
-        """Setup the exchange on RabbitMQ by invoking the Exchange.Declare RPC
-        command. When it is complete, the process to setup the queue can start.
-
-        :param str exchange_name: The name of the exchange to declare
-        :param type : The type of the exchange to setup. By default, the
-        the exchange is direct type.
-
-        """
-        # Open the channel for the first time to setup the exchange
-        channel_handler = ChannelHandler(self._connection)
-        channel_handler.open_channel()
-        self._channel = channel_handler.get_channel()
-        LOGGER.info('Setting the exchange with this name : %s', exchange_name)
-        if len(exchange_name) < 3:
-            raise ExchangeNameDoesntMatch('This exchange name does''nt match')
-
-        # Check Me : self._channel.basic_qos(prefetch_count=1)
-        self._channel.exchange_declare(exchange=exchange_name, type=type)
-
-        # Close the channel after setting the exchange
-        # self._channel.close_channel()
-        channel_handler.close_channel()
-
     def bind_queue_to_exchange(self, queue_name, exchange_name):
         """Method invoked by pika when the Queue.Declare RPC call made in
         setup_queue has completed. In this method we will bind the queue
@@ -99,7 +82,7 @@ class Producer(object):
         LOGGER.info('Binding DEFAULT_EXCHANGE to this queue `%s`', queue_name)
         self._channel.queue_bind(queue=queue_name, exchange=exchange_name)
 
-    def setup_queue(self, queue_name, exchange_name=DEFAULT_EXCHANGE):
+    def setup_queue(self, queue_name, exchange_name):
         """Setting the queue to allow pushong in a specied exchange
 
         :param str queue_name : The name of the queue to set in RabbitMQ.
@@ -155,7 +138,8 @@ class Producer(object):
         # 4. Check if the queue exists or not in rabbit.
         if queue not in queues:
             # If the queue does'nt exist, setup the queue
-            self.setup_queue(queue)
+            self.setup_queue(queue, self._exchange_name)
+
         # 5. The after, send the message
         self._channel.basic_publish(exchange=DEFAULT_EXCHANGE,
                                     routing_key=queue,
