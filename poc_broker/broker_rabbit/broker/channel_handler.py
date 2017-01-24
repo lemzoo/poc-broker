@@ -1,4 +1,6 @@
 import logging
+import json
+from broker.queue_handler import QueueHandler
 from broker.broker_exception import ConnectionNotOpenedYet
 from broker.broker_exception import ChannelDoesntExist
 
@@ -42,6 +44,18 @@ class ChannelHandler(object):
         """
         LOGGER.info('The channel will close in a few time')
         self._channel.close()
+
+    def send_message(self, exchange, queue, message):
+        queue_handler = QueueHandler(self._channel, exchange)
+        basic_properties = queue_handler.setup_properties()
+        # Setup the queue in RabbitMQ before working on it
+        queue_handler.setup_queue(queue)
+
+        # Now send the message
+        self._channel.basic_publish(exchange=exchange,
+                                    routing_key=queue,
+                                    body=json.dumps(message),
+                                    properties=basic_properties)
 
     def get_channel(self):
         """Get the current opened connection """

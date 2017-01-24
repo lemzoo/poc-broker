@@ -10,11 +10,11 @@ def main():
     connection_handler = ConnectionHandler()
     connection = connection_handler.get_connection()
     publisher = Producer(connection)
-    for i in range(2):
+    for i in range(257):
         for message in data:
             queue = message['id']
             publisher.publish(queue, message)
-            connection.sleep(1)
+            connection.sleep(0.001)
 
 
 if __name__ == '__main__':

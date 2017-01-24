@@ -29,3 +29,7 @@ class QueueNameDoesntMatch(Exception):
 
 class ExchangeNameDoesntMatch(Exception):
     pass
+
+
+class BasicPropertiesIsNotSet(Exception):
+    pass
