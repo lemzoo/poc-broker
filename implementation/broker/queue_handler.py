@@ -1,6 +1,6 @@
 import pika
 import logging
-from broker.rabbit_api import get_all_queue
+from broker.rabbit_api import list_queues
 from broker.broker_exception import ChannelDoesntExist
 from broker.broker_exception import QueueNameDoesntMatch
 from broker.broker_exception import ExchangeNotDefinedYet
@@ -91,7 +91,7 @@ class QueueHandler(object):
             raise QueueNameDoesntMatch('This queue name does''nt match')
 
         # Check if the queue exist before creating it
-        existing_queues = get_all_queue('localhost', 15672, 'guest', 'guest')
+        existing_queues = list_queues()
         if queue_name in existing_queues:
             return queue_name
         declared_queue = self._channel.queue_declare(queue=queue_name,
