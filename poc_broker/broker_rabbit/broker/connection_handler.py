@@ -15,6 +15,14 @@ class ConnectionHandler(object):
 
     def __init__(self, host='localhost', port=5672,
                  user_id='guest', password='guest'):
+        """Create a new instance of Connection Handler by using the given
+        parameters to connect to RabbitMQ.
+
+        :param str host: The URL for connecting to RabbitMQ
+        :param int port: The port which in use to connect to RabbitMQ
+        :param str user_id: The user to use to get the connection with RabbitMQ
+        :param password: The password for the user for authentification
+        """
         self._host = host
         self._port = port
         self._user_id = user_id

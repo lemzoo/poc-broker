@@ -9,12 +9,19 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ChannelHandler(object):
-    """This is a  Connection Handler to manage the connection between the
-    client and RabbitMQ.
+    """This is a  Channel Handler which use the connection handler to get a new
+    channel to allow the client to communicate with RabbitMQ.
 
     """
 
     def __init__(self, connection):
+        """Create a new instance of the channel class by using the current
+        connection.
+
+        :param ConnectionHandler connection: The given connection to allow
+        communication with RabbitMQ.
+
+        """
         self._connection = connection
         self._channel = None
         # self.open_channel()
@@ -33,11 +40,12 @@ class ChannelHandler(object):
         """Close the channel after its use. NB : The channel is a lightwise
         ressource for RabbitMQ.
         """
-        print('The channel will close in a few time')
+        LOGGER.info('The channel will close in a few time')
         self._channel.close()
 
     def get_channel(self):
         """Get the current opened connection """
+        LOGGER.info('Getting the channel object')
         if self._channel is None:
             raise ChannelDoesntExist('The channel doesn''t exist yet')
         return self._channel
