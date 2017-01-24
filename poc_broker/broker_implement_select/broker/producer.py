@@ -206,7 +206,6 @@ class Producer(object):
                                  routing_key='')
 
     def on_bindok(self, unused_frame):
-        # import pdb; pdb.set_trace()
         """This method is invoked by pika when it receives the Queue.BindOk
         response from RabbitMQ. Since we know we're now setup and bound, it's
         time to start publishing."""
