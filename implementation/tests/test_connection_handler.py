@@ -11,7 +11,7 @@ class TestConnnectionHandler():
         connection_handler = ConnectionHandler()
         assert True == connection_handler._connection.is_open
         assert isinstance(connection_handler._connection, BlockingConnection)
-        assert connection_handler._connection is None
+        assert connection_handler._connection is not None
 
     def test_open_connection_with_bad_credential(self):
         with pytest.raises(ConnectionClosed):
