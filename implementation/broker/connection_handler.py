@@ -53,3 +53,8 @@ class ConnectionHandler(object):
     def get_connection(self):
         """Get the current opened connection """
         return self._connection
+
+    def sleep(self, time_to_sleep):
+        if self._connection is None or self._connection.is_open is False:
+            raise Exception()
+        self._connection.sleep(time_to_sleep)
