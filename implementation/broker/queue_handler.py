@@ -90,7 +90,10 @@ class QueueHandler(object):
         if len(queue_name) < 3:
             raise QueueNameDoesntMatch('This queue name does''nt match')
 
-        # Check if the queue exist before creating it
+        # Check if the queue exist before creating it.
+        """
+        Rework here. An existing queue can be in processing state
+        """
         existing_queues = list_queues()
         if queue_name in existing_queues:
             return queue_name
