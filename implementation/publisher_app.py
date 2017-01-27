@@ -1,4 +1,5 @@
 # !/usr/bin/env python
+from datetime import datetime
 from broker.producer import Producer
 from broker.connection_handler import ConnectionHandler
 from messages import data
@@ -13,8 +14,11 @@ def main():
     for i in range(2):
         for message in data:
             queue = message['id']
+            now = datetime.now()
+            str_now = now.isoformat()
+            message['event_hour'] = str_now
             publisher.publish(queue, message)
-            connection.sleep(0.001)
+            connection.sleep(0.1)
 
 
 if __name__ == '__main__':
