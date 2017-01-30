@@ -21,6 +21,8 @@ sudo mv rabbitmq.config.example rabbitmq.config
 
 Retirer le commentaire à la ligne 58 et ajouter guest à la ligne des users
 ```
+vi rabbitmq.config
+```
  {loopback_users, ["guest"]},
 ```
 
